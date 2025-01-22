@@ -3,8 +3,8 @@ services:
   web:
     image: nginx:latest
     ports:
-        - "8000:80"
+      - "8000:80"
     volumes:
-        - /Users/dhelil/Desktop/Docker:/usr/share/nginx/html
+      - /Users/dhelil/Desktop/Docker:/usr/share/nginx/html
 
-  
+ 
