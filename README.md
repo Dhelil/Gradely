@@ -27,3 +27,6 @@
 - *Frontend* : React.js pour une interface utilisateur dynamique.
 
 - *Style* : Boostrap ou TailwindCSS
+
+## Trello
+Lien du trello : https://trello.com/b/t3PEdZed/gradely
