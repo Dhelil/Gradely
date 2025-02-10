@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('./db');
+//const db = require('./db');
 
 // Route permettant de récupérer le cahier de texte d'une classe
 router.get('/cahiers', (req, res) => {

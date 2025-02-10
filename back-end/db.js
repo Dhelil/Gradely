@@ -8,7 +8,7 @@ console.log('DB_PASSWORD:', process.env.DB_PASSWORD);
 console.log('DB_NAME:', process.env.DB_NAME);
 
 // Créer une connexion à la base de données
-const connection = mysql.createConnection({
+const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -16,12 +16,12 @@ const connection = mysql.createConnection({
 });
 
 // Connecter à la base de données
-connection.connect((err) => {
+db.connect((err) => {
   if (err) {
-    console.error('Erreur de connexion à la base de données:', err.stack);
-    return;
+    console.error('Erreur de connexion à la base de données:', err);
+    process.exit(1);
   }
-  console.log('Connecté à la base de données en tant que ID ' + connection.threadId);
+  console.log('Connecté à la base de données MySQL');
 });
 
-module.exports = connection;
+module.exports = db;
