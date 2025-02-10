@@ -7,20 +7,20 @@ const db = require('./db');
 
 
 // Importer les fichiers de routes
-// const cahierDeTexteRoutes = require('./routes/cahier_de_texte');
-// const classeRoutes = require('./routes/classe');
-// const devoirRoutes = require('./routes/devoir');
-// const notesRoutes = require('./routes/notes');
-// const matieresRoutes = require('./routes/matieres');
-// const vieScolaireRoutes = require('./routes/vie_scolaire');
+const cahierDeTexteRoutes = require('./routes/cahier_de_texte');
+const classeRoutes = require('./routes/classe');
+const devoirRoutes = require('./routes/devoir');
+const notesRoutes = require('./routes/notes');
+const matieresRoutes = require('./routes/matieres');
+const vieScolaireRoutes = require('./routes/vie_scolaire');
 
 // // Utiliser les routes
-// app.use('/cahier_de_texte', cahierDeTexteRoutes);
-// app.use('/classe', classeRoutes);
-// app.use('/devoir', devoirRoutes);
-// app.use('/notes', notesRoutes);
-// app.use('/matieres', matieresRoutes);
-// app.use('/vie_scolaire', vieScolaireRoutes);
+app.use('/cahier_de_texte', cahierDeTexteRoutes);
+app.use('/classe', classeRoutes);
+app.use('/devoir', devoirRoutes);
+app.use('/notes', notesRoutes);
+app.use('/matieres', matieresRoutes);
+app.use('/vie_scolaire', vieScolaireRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
