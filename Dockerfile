@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Exposer le port que l'application utilise
-EXPOSE 3000
+EXPOSE 4000
 
 # Définir la commande à exécuter lorsque le conteneur démarre
 CMD ["node", "index.js"]

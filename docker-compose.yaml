@@ -1,22 +1,22 @@
-version: '3'
-services:
-  web:
-    image: nginx:latest
-    ports:
-      - "8000:80"
-    volumes:
-      - /Users/dhelil/Desktop/Docker:/usr/share/nginx/html
+version: '3.8'
 
+services:
   db:
-    image: mysql:latest
+    image: mariadb:latest
+    env_file:
+      - ./back-end/.env
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: exampledb
-      MYSQL_USER: exampleuser
-      MYSQL_PASSWORD: examplepassword
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - db_data:/var/lib/mysql
-
+      - db_data2:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
@@ -25,6 +25,22 @@ services:
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "8080:80"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  node:
+    image: node:latest
+    volumes:
+      - ./back-end:/app
+    command: node /app/index.js
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./back-end/.env
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
-  db_data:
+  db_data2:
