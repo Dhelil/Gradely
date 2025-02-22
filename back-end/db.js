@@ -9,11 +9,12 @@ console.log('DB_NAME:', process.env.DB_NAME);
 
 // Créer une connexion à la base de données
 const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
+  host: process.env.DB_HOST || 'db',  // db est le nom du service de base de données dans Docker Compose
+  user: process.env.DB_USER || 'exampleuser',  // Utilise l'utilisateur défini dans .env
+  password: process.env.DB_PASSWORD || 'examplepassword',  // Mot de passe dans .env
+  database: process.env.DB_NAME || 'Gradely',  // Nom de la base de données défini dans .env
 });
+
 
 // Connecter à la base de données
 db.connect((err) => {

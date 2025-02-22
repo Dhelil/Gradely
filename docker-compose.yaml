@@ -4,7 +4,7 @@ services:
   db:
     image: mariadb:latest
     env_file:
-      - ./back-end/.env
+      - ./.env
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: ${DB_NAME}
@@ -19,7 +19,7 @@ services:
       retries: 5
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
+    image: arm64v8/phpmyadmin
     environment:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: root
@@ -33,11 +33,11 @@ services:
     image: node:latest
     volumes:
       - ./back-end:/app
-    command: node /app/index.js
+    command: node --max-old-space-size=4096 /app/index.js
     ports:
       - "4000:4000"
     env_file:
-      - ./back-end/.env
+      - ./.env
     depends_on:
       db:
         condition: service_healthy
