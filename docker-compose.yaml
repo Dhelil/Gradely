@@ -42,5 +42,12 @@ services:
       db:
         condition: service_healthy
 
+  front-end:
+    build: ./front-end
+    ports:
+      - "80:80"
+    depends_on:
+      - node
+
 volumes:
   db_data2:
