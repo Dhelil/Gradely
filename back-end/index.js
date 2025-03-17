@@ -1,9 +1,10 @@
 const express = require('express');
+const cors = require('cors'); // Importer le middleware cors
 const app = express();
 const port = process.env.PORT || 4000;
 
-// Importer le module de connexion à la base de données
-const db = require('./db');
+// Utiliser le middleware cors
+app.use(cors());
 
 app.use(express.json()); // Ajoute ceci pour parser le body des requêtes JSON
 
@@ -24,7 +25,6 @@ app.use('/notes', notesRoutes);
 app.use('/matieres', matieresRoutes);
 app.use('/vie_scolaire', vieScolaireRoutes);
 app.use('/user', userRoutes);
-
 
 // Route de test par défaut
 app.get('/', (req, res) => {

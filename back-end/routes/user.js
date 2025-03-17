@@ -45,14 +45,14 @@ router.post('/add', (req, res) => {
     const { id, name, surname, email, password, phone_number, adress, role, created_at, updated_at } = req.body;
 
     const SQL = `
-        INSERT INTO USER (id, name, surname, email, password, phone_number, adress, role, created_at, updated_at) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        INSERT INTO USER (id, name, surname, email, password, phone_number, adress, role) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
 
-    db.query(SQL, [id, name, surname, email, password, phone_number, adress, role, created_at, updated_at], (err, result) => {
+    db.query(SQL, [id, name, surname, email, password, phone_number, adress, role], (err, result) => {
         if (err) {
             return res.status(400).json({ message: 'Erreur lors de la création d\'user' });
         }
-        res.status(201).json({ message: 'Création de l\'user réussie', user: { id: result.insertId, name, surname, email, phone_number, adress, role, created_at, updated_at } });
+        res.status(201).json({ message: 'Création de l\'user réussie', user: { id: result.insertId, name, surname, email, phone_number, adress, role } });
     });
 });
 
