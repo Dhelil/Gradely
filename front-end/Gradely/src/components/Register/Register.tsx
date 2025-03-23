@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 const Register: React.FC = () => {
     const [username, setUsername] = useState('');
@@ -11,6 +12,7 @@ const Register: React.FC = () => {
     const [role, setRole] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<boolean>(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -43,6 +45,10 @@ const Register: React.FC = () => {
             const data = await response.json();
             console.log('Success:', data);
             setSuccess(true);
+
+            // Redirection vers la page de login
+            navigate("/login")
+
         } catch (err) {
             console.error('Error:', err);
             setError((err as Error).message);
