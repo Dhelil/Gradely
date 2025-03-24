@@ -18,7 +18,7 @@ const Register: React.FC = () => {
         event.preventDefault();
         setError(null);
         setSuccess(false);
-    
+
         try {
             const response = await fetch('http://localhost:4000/user/add', {
                 method: 'POST',
@@ -30,112 +30,119 @@ const Register: React.FC = () => {
                     surname,
                     email,
                     password,
-                    phone_number: phoneNumber, // Correction du champ
-                    adress: address,           // Correction du champ
+                    phone_number: phoneNumber,
+                    address,
                     role
                 }), 
             });
-    
+
             if (!response.ok) {
                 const errorData = await response.json();
                 console.error('Error response:', errorData);
                 throw new Error(errorData.message || 'Failed to register');
             }
-    
+
             const data = await response.json();
             console.log('Success:', data);
             setSuccess(true);
 
             // Redirection vers la page de login
-            navigate("/login")
+            navigate("/login");
 
         } catch (err) {
             console.error('Error:', err);
             setError((err as Error).message);
         }
     };
-    
 
     return (
-        <div>
-            <h2>Register</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="username">Username:</label>
+        <div className="container">
+            <h2 className="header">Register</h2>
+            <form onSubmit={handleSubmit} className="form">
+                <div className="formGroup">
+                    <label htmlFor="username" className="label">Username:</label>
                     <input
                         type="text"
                         id="username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
+                        className="input"
                     />
                 </div>
-                <div>
-                    <label htmlFor="name">Name:</label>
+                <div className="formGroup">
+                    <label htmlFor="name" className="label">Name:</label>
                     <input
                         type="text"
                         id="name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
+                        className="input"
                     />
                 </div>
-                <div>
-                    <label htmlFor="surname">Surname:</label>
+                <div className="formGroup">
+                    <label htmlFor="surname" className="label">Surname:</label>
                     <input
                         type="text"
                         id="surname"
                         value={surname}
                         onChange={(e) => setSurname(e.target.value)}
+                        className="input"
                     />
                 </div>
-                <div>
-                    <label htmlFor="email">Email:</label>
+                <div className="formGroup">
+                    <label htmlFor="email" className="label">Email:</label>
                     <input
                         type="email"
                         id="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        className="input"
                     />
                 </div>
-                <div>
-                    <label htmlFor="password">Password:</label>
+                <div className="formGroup">
+                    <label htmlFor="password" className="label">Password:</label>
                     <input
                         type="password"
                         id="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        className="input"
                     />
                 </div>
-                <div>
-                    <label htmlFor="phoneNumber">Phone Number:</label>
+                <div className="formGroup">
+                    <label htmlFor="phoneNumber" className="label">Phone Number:</label>
                     <input
                         type="text"
                         id="phoneNumber"
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
+                        className="input"
                     />
                 </div>
-                <div>
-                    <label htmlFor="address">Address:</label>
+                <div className="formGroup">
+                    <label htmlFor="address" className="label">Address:</label>
                     <input
                         type="text"
                         id="address"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
+                        className="input"
                     />
                 </div>
-                <div>
-                    <label htmlFor="role">Role:</label>
+                <div className="formGroup">
+                    <label htmlFor="role" className="label">Role:</label>
                     <input
                         type="text"
                         id="role"
                         value={role}
                         onChange={(e) => setRole(e.target.value)}
+                        className="input"
                     />
                 </div>
-                <button type="submit">Register</button>
+                <button type="submit" className="button">Register</button>
             </form>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            {success && <p style={{ color: 'green' }}>Registration successful!</p>}
+            {error && <p className="error">{error}</p>}
+            {success && <p className="success">Registration successful!</p>}
         </div>
     );
 };
