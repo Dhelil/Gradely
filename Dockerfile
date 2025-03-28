@@ -1,20 +1,21 @@
-# Utiliser une image de base officielle de Node.js
-FROM node:14
+# Étape 1 : Build de l'application React
+FROM node:18 AS build
 
-# Définir le répertoire de travail dans le conteneur
 WORKDIR /app
 
-# Copier le fichier package.json et package-lock.json
-COPY package*.json ./
+COPY /front-end/Gradely/package*.json ./
 
-# Installer les dépendances de l'application
 RUN npm install
 
-# Copier le reste des fichiers de l'application
-COPY . .
+COPY /front-end/Gradely ./
 
-# Exposer le port que l'application utilise
-EXPOSE 4000
+RUN npm run build
 
-# Définir la commande à exécuter lorsque le conteneur démarre
-CMD ["node", "index.js"]
+# Étape 2 : Servir avec Nginx
+FROM nginx:alpine
+
+COPY --from=build /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

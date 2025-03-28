@@ -1,24 +1,30 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+interface User {
+  id: string;
+  name: string;
+  surname: string;
+}
+
 const Home = () => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Récupérer les données de l'utilisateur depuis localStorage
     const userData = localStorage.getItem('user');
-    if (userData) {
-      setUser(JSON.parse(userData));
+    try {
+      setUser(userData ? JSON.parse(userData) : null);
+    } catch (e) {
+      console.error("Erreur de parsing user:", e);
+      setUser(null);
     }
-  }, []); // Le tableau vide [] signifie que l'effet ne se déclenche qu'une fois au montage du composant
+  }, []);
 
   const handleLogout = () => {
-    // Supprimer le token et les informations utilisateur du localStorage
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    
-    // Rediriger l'utilisateur vers la page de connexion
+    localStorage.removeItem('userId');
     navigate('/login');
   };
 
@@ -29,7 +35,6 @@ const Home = () => {
       {user ? (
         <div>
           <p>Vous êtes connecté en tant que : {user.name} {user.surname}</p>
-          {/* Ajouter un bouton pour se déconnecter */}
           <button onClick={handleLogout}>Déconnexion</button>
         </div>
       ) : (

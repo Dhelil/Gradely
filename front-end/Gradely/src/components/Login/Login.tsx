@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 
+
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -9,13 +10,12 @@ const Login: React.FC = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Vérifier si l'utilisateur est déjà connecté (si le token est dans localStorage)
         const token = localStorage.getItem('token');
-        if (token) {
-            // Si un token est trouvé, rediriger vers la page d'accueil
+        const userId = localStorage.getItem('userId');
+        if (token && userId) {
             navigate('/');
         }
-    }, [navigate]); // Le tableau vide [] garantit que l'effet ne se déclenche qu'une fois au montage du composant
+    }, [navigate]);
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -36,19 +36,17 @@ const Login: React.FC = () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                console.error('Error response:', errorData);
                 throw new Error(errorData.message || 'Failed to login');
             }
 
             const data = await response.json();
-            console.log('Success:', data);
+            console.log('Réponse API:', data);
             setSuccess(true);
 
-            // Stockage du token et de l'utilisateur dans le localStorage
             localStorage.setItem('token', data.token);
             localStorage.setItem('user', JSON.stringify(data.user));
+            localStorage.setItem('userId', data.user.id);
 
-            // Redirection vers la page d'accueil ou dashboard
             navigate("/");
 
         } catch (err) {
@@ -63,7 +61,6 @@ const Login: React.FC = () => {
             {error && <p className="error">{error}</p>}
             {success && <p className="success">Login successful!</p>}
 
-            {/* Si l'utilisateur est déjà connecté, on affiche un message au lieu du formulaire */}
             {!localStorage.getItem('token') ? (
                 <form onSubmit={handleSubmit} className="form">
                     <div className="formGroup">
@@ -74,6 +71,7 @@ const Login: React.FC = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="input"
+                            required
                         />
                     </div>
                     <div className="formGroup">
@@ -84,6 +82,7 @@ const Login: React.FC = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             className="input"
+                            required
                         />
                     </div>
                     <button type="submit" className="button">Login</button>
