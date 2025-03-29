@@ -10,8 +10,7 @@ const Register: React.FC = () => {
         email: '',
         password: '',
         phoneNumber: '',
-        address: '',
-        role: 'user'
+        address: ''
     });
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,8 +36,7 @@ const Register: React.FC = () => {
                     email: formData.email,
                     password: formData.password,
                     phone_number: formData.phoneNumber,
-                    address: formData.address,
-                    role: formData.role
+                    address: formData.address
                 }), 
             });
 
@@ -143,20 +141,6 @@ const Register: React.FC = () => {
                             className="register-input"
                             required
                         />
-                    </div>
-
-                    <div className="register-form-group">
-                        <label className="register-label">Role:</label>
-                        <select
-                            name="role"
-                            value={formData.role}
-                            onChange={handleChange}
-                            className="register-input"
-                            required
-                        >
-                            <option value="user">User</option>
-                            <option value="admin">Admin</option>
-                        </select>
                     </div>
 
                     <button 

@@ -45,32 +45,38 @@ router.get('/:id', (req, res) => {
 
 // Route permettant d'ajouter un user
 router.post('/add', async (req, res) => {
-    console.log("Données reçues :", req.body); // Vérifie ce que le frontend envoie
+    console.log("Données reçues :", req.body);
 
-    const { name, surname, email, password, phone_number, address, role } = req.body;
+    const { name, surname, email, password, phone_number, address } = req.body;
 
-    // Vérifier si tous les champs requis sont fournis
-    if (!name || !surname || !email || !password || !phone_number || !address || !role) {
+    // Vérification des champs (on retire la vérification du rôle)
+    if (!name || !surname || !email || !password || !phone_number || !address) {
         return res.status(400).json({ message: "Tous les champs sont requis." });
     }
 
     try {
-        // Hachage du mot de passe
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Requête SQL sans `id` si c'est une clé auto-incrémentée
-        const SQL = `INSERT INTO USER (name, surname, email, password, phone_number, address, role) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+        // On fixe le rôle à 'user' et on le retire des paramètres dynamiques
+        const SQL = `INSERT INTO USER (name, surname, email, password, phone_number, address, role) VALUES (?, ?, ?, ?, ?, ?, 'user')`;
 
-        // Exécution de la requête
-        db.query(SQL, [name, surname, email, hashedPassword, phone_number, address, role], (err, result) => {
+        db.query(SQL, [name, surname, email, hashedPassword, phone_number, address], (err, result) => {
             if (err) {
-                console.error("Erreur SQL :", err); // Afficher l'erreur SQL exacte
+                console.error("Erreur SQL :", err);
                 return res.status(400).json({ message: "Erreur SQL lors de la création de l'user", error: err });
             }
 
             res.status(201).json({ 
                 message: "Création de l'user réussie", 
-                user: { id: result.insertId, name, surname, email, phone_number, address, role } 
+                user: { 
+                    id: result.insertId, 
+                    name, 
+                    surname, 
+                    email, 
+                    phone_number, 
+                    address,
+                    role: 'user' // On renvoie toujours 'user'
+                } 
             });
         });
     } catch (error) {
