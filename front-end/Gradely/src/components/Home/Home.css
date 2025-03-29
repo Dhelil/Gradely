@@ -1,0 +1,55 @@
+.home-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    padding: 20px;
+  }
+  
+  .home-content {
+    width: 100%;
+    max-width: 600px;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .error-message {
+    color: #e74c3c;
+    text-align: center;
+  }
+  
+  .user-section, .auth-section {
+    margin-top: 1.5rem;
+    text-align: center;
+  }
+  
+  .logout-button, .login-button {
+    padding: 0.75rem 1.5rem;
+    margin-top: 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+  }
+  
+  .logout-button {
+    background-color: #e74c3c;
+    color: white;
+  }
+  
+  .logout-button:hover {
+    background-color: #c0392b;
+  }
+  
+  .login-button {
+    background-color: #2ecc71;
+    color: white;
+  }
+  
+  .login-button:hover {
+    background-color: #27ae60;
+  }

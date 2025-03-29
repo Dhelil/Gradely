@@ -47,10 +47,10 @@ router.get('/:id', (req, res) => {
 router.post('/add', async (req, res) => {
     console.log("Données reçues :", req.body); // Vérifie ce que le frontend envoie
 
-    const { name, surname, email, password, phone_number, adress, role } = req.body;
+    const { name, surname, email, password, phone_number, address, role } = req.body;
 
     // Vérifier si tous les champs requis sont fournis
-    if (!name || !surname || !email || !password || !phone_number || !adress || !role) {
+    if (!name || !surname || !email || !password || !phone_number || !address || !role) {
         return res.status(400).json({ message: "Tous les champs sont requis." });
     }
 
@@ -59,10 +59,10 @@ router.post('/add', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Requête SQL sans `id` si c'est une clé auto-incrémentée
-        const SQL = `INSERT INTO USER (name, surname, email, password, phone_number, adress, role) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+        const SQL = `INSERT INTO USER (name, surname, email, password, phone_number, address, role) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
         // Exécution de la requête
-        db.query(SQL, [name, surname, email, hashedPassword, phone_number, adress, role], (err, result) => {
+        db.query(SQL, [name, surname, email, hashedPassword, phone_number, address, role], (err, result) => {
             if (err) {
                 console.error("Erreur SQL :", err); // Afficher l'erreur SQL exacte
                 return res.status(400).json({ message: "Erreur SQL lors de la création de l'user", error: err });
@@ -70,7 +70,7 @@ router.post('/add', async (req, res) => {
 
             res.status(201).json({ 
                 message: "Création de l'user réussie", 
-                user: { id: result.insertId, name, surname, email, phone_number, adress, role } 
+                user: { id: result.insertId, name, surname, email, phone_number, address, role } 
             });
         });
     } catch (error) {

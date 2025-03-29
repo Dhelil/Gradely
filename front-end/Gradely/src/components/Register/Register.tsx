@@ -1,148 +1,173 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import './Register.css';
 
 const Register: React.FC = () => {
-    const [username, setUsername] = useState('');
-    const [name, setName] = useState('');
-    const [surname, setSurname] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [address, setAddress] = useState('');
-    const [role, setRole] = useState('');
+    const [formData, setFormData] = useState({
+        username: '',
+        name: '',
+        surname: '',
+        email: '',
+        password: '',
+        phoneNumber: '',
+        address: '',
+        role: 'user'
+    });
     const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setError(null);
-        setSuccess(false);
+        setIsSubmitting(true);
 
         try {
             const response = await fetch('http://localhost:4000/user/add', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    name,
-                    surname,
-                    email,
-                    password,
-                    phone_number: phoneNumber,
-                    address,
-                    role
+                    name: formData.name,
+                    surname: formData.surname,
+                    email: formData.email,
+                    password: formData.password,
+                    phone_number: formData.phoneNumber,
+                    address: formData.address,
+                    role: formData.role
                 }), 
             });
 
             if (!response.ok) {
                 const errorData = await response.json();
-                console.error('Error response:', errorData);
                 throw new Error(errorData.message || 'Failed to register');
             }
 
-            const data = await response.json();
-            console.log('Success:', data);
-            setSuccess(true);
-
-            // Redirection vers la page de login
-            navigate("/login");
-
+            navigate("/login", { state: { registrationSuccess: true } });
         } catch (err) {
-            console.error('Error:', err);
             setError((err as Error).message);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     return (
-        <div className="container">
-            <h2 className="header">Register</h2>
-            <form onSubmit={handleSubmit} className="form">
-                <div className="formGroup">
-                    <label htmlFor="username" className="label">Username:</label>
-                    <input
-                        type="text"
-                        id="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        className="input"
-                    />
-                </div>
-                <div className="formGroup">
-                    <label htmlFor="name" className="label">Name:</label>
-                    <input
-                        type="text"
-                        id="name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="input"
-                    />
-                </div>
-                <div className="formGroup">
-                    <label htmlFor="surname" className="label">Surname:</label>
-                    <input
-                        type="text"
-                        id="surname"
-                        value={surname}
-                        onChange={(e) => setSurname(e.target.value)}
-                        className="input"
-                    />
-                </div>
-                <div className="formGroup">
-                    <label htmlFor="email" className="label">Email:</label>
-                    <input
-                        type="email"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="input"
-                    />
-                </div>
-                <div className="formGroup">
-                    <label htmlFor="password" className="label">Password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="input"
-                    />
-                </div>
-                <div className="formGroup">
-                    <label htmlFor="phoneNumber" className="label">Phone Number:</label>
-                    <input
-                        type="text"
-                        id="phoneNumber"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                        className="input"
-                    />
-                </div>
-                <div className="formGroup">
-                    <label htmlFor="address" className="label">Address:</label>
-                    <input
-                        type="text"
-                        id="address"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        className="input"
-                    />
-                </div>
-                <div className="formGroup">
-                    <label htmlFor="role" className="label">Role:</label>
-                    <input
-                        type="text"
-                        id="role"
-                        value={role}
-                        onChange={(e) => setRole(e.target.value)}
-                        className="input"
-                    />
-                </div>
-                <button type="submit" className="button">Register</button>
-            </form>
-            {error && <p className="error">{error}</p>}
-            {success && <p className="success">Registration successful!</p>}
+        <div className="register-container">
+            <div className="register-form">
+                <h2 className="register-header">Create Account</h2>
+                {error && <p className="register-error">{error}</p>}
+
+                <form onSubmit={handleSubmit}>
+                    <div className="register-form-group">
+                        <label className="register-label">Username:</label>
+                        <input
+                            type="text"
+                            name="username"
+                            value={formData.username}
+                            onChange={handleChange}
+                            className="register-input"
+                        />
+                    </div>
+
+                    <div className="register-form-group">
+                        <label className="register-label">Name:</label>
+                        <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            className="register-input"
+                            required
+                        />
+                    </div>
+
+                    <div className="register-form-group">
+                        <label className="register-label">Surname:</label>
+                        <input
+                            type="text"
+                            name="surname"
+                            value={formData.surname}
+                            onChange={handleChange}
+                            className="register-input"
+                            required
+                        />
+                    </div>
+
+                    <div className="register-form-group">
+                        <label className="register-label">Email:</label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            className="register-input"
+                            required
+                        />
+                    </div>
+
+                    <div className="register-form-group">
+                        <label className="register-label">Password:</label>
+                        <input
+                            type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            className="register-input"
+                            required
+                        />
+                    </div>
+
+                    <div className="register-form-group">
+                        <label className="register-label">Phone Number:</label>
+                        <input
+                            type="text"
+                            name="phoneNumber"
+                            value={formData.phoneNumber}
+                            onChange={handleChange}
+                            className="register-input"
+                            required
+                        />
+                    </div>
+
+                    <div className="register-form-group">
+                        <label className="register-label">Address:</label>
+                        <input
+                            type="text"
+                            name="address"
+                            value={formData.address}
+                            onChange={handleChange}
+                            className="register-input"
+                            required
+                        />
+                    </div>
+
+                    <div className="register-form-group">
+                        <label className="register-label">Role:</label>
+                        <select
+                            name="role"
+                            value={formData.role}
+                            onChange={handleChange}
+                            className="register-input"
+                            required
+                        >
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        className="register-button"
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? 'Creating account...' : 'Register'}
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };

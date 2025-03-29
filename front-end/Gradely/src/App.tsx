@@ -31,14 +31,8 @@ function App() {
         <nav>
           <ul>
             <li><Link to="/">Home</Link></li>
-            {!user ? (
-              <>
                 <li><Link to="/login">Login</Link></li>
                 <li><Link to="/register">Register</Link></li>
-              </>
-            ) : (
-              <li><Link to={`/notes/${user.id}/notes`}>Notes</Link></li>
-            )}
           </ul>
         </nav>
 
