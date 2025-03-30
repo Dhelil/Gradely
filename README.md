@@ -2,11 +2,10 @@
 
 Application web intuitive pour la gestion des notes académiques, développée par Medjeni Dhelil.
 
-### Lancement
-``
-git clone [URL_DU_DEPOT]
-cd Docker
-docker compose up -d --build```
+## 🚀 Installation
+``` git clone [URL_DU_DEPOT] ```
+``` cd Docker ```
+``` docker compose up -d --build ```
 
 ### 🌐 Accès
 - Frontend : http://localhost
@@ -58,8 +57,6 @@ Avec une interface claire et des visualisations données.
 ### Base de données
 - **SGBD** : MariaDB (MySQL)
 - **Admin** : phpMyAdmin
-
-## 🚀 Installation
 
 ### Prérequis
 - Docker + Docker Compose
