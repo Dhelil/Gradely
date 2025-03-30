@@ -1,32 +1,70 @@
-# UE-Dev-App-Web (Gradely) Medjeni Dhelil
+# Gradely - Gestion Scolaire
 
-## Description du projet
+Application web intuitive pour la gestion des notes académiques, développée par Medjeni Dhelil.
 
-- Gradely est une application web intuitive qui permet aux étudiants et aux enseignants de gérer facilement les notes académiques. L'objectif principal est de fournir une interface claire pour saisir, consulter et analyser les performances étudiantes.
+### Lancement
+``
+git clone [URL_DU_DEPOT]
+cd Docker
+docker compose up -d --build```
 
-## Fonctionnalités principales
+### 🌐 Accès
+- Frontend : http://localhost
+- Backend : http://localhost:4000
+- pypMyAdmin : http://localhost:8080 avec root root pour id et mdp
 
-- *Authentification et autorisation* : Gestion des utilisateurs avec des rôles (étudiant, parent, enseignant/administrateur).
+### 🆕 Première utilisation
+Création de compte
+Les comptes par défaut ne sont pas fonctionnels (problème d hash). Vous devez :
+1. Créer un nouveau compte via l'interface
+2. Utiliser ces identifiants pour vous connecter
 
-- *Gestion des élèves et des cours* : Création et modification des profils des étudiants et des cours.
+## 📝 Description
 
-- *Saisie et consultation des notes* : Ajout, modification et affichage des notes par étudiant et par matière.
+Gradely permet aux étudiants et enseignants de gérer facilement :
+- 📌 Les notes académiques
+- 📝 Les devoirs
+- 📊 Les performances étudiantes
 
-- *Saisie et consultation des devoirs* : Ajout, modification et affichage des devoirs par étudiant et par matière.
+Avec une interface claire et des visualisations données.
 
-- *Statistiques et visualisations* : Tableaux, moyennes, statistiques pour analyser les performances académiques.
+## ✨ Fonctionnalités principales
 
-- *Notifications* : Alertes pour les étudiants en cas de baisse des performances ou de nouvelles notes.
+### 🔐 Authentification
+- Gestion des rôles (Étudiant/Enseignant/Admin/Professeurs)
+- Système de connexion sécurisé
 
-## Technologies utilisés
+### 📚 Gestion pédagogique
+- Profils étudiants et cours
+- Saisie et consultation des notes
+- Gestion des devoirs
+- Cahier de texte numérique
 
-- *Backend* : Express.js pour l'API REST.
+### 📊 Analytics
+- Statistiques de performance
+- Visualisations des moyennes
+- Alertes automatiques
 
-- *Base de données* : MySQL pour le stockage des données.
+## 🛠 Technologies
 
-- *Frontend* : React.js pour une interface utilisateur dynamique.
+### Backend
+- **API** : Node.js/Express
+- **Authentification** : JWT
 
-- *Style* : Boostrap ou TailwindCSS
+### Frontend
+- **Framework** : React.js
+- **Styling** : Bootstrap/TailwindCSS
 
-## Trello
-Lien du trello : https://trello.com/b/t3PEdZed/gradely
+### Base de données
+- **SGBD** : MariaDB (MySQL)
+- **Admin** : phpMyAdmin
+
+## 🚀 Installation
+
+### Prérequis
+- Docker + Docker Compose
+- Ports 80, 4000, 8080 disponibles
+
+### 📊 Trello
+https://trello.com/b/t3PEdZed/gradely
+
