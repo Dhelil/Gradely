@@ -76,8 +76,7 @@ const Home = () => {
   return (
     <div className="home-container">
       <div className="home-content">
-        <h2>Welcome to the Home Page</h2>
-        <p>This is the home page</p>
+        <h2>GRADELY</h2>
         
         {error && <p className="error-message">{error}</p>}
         

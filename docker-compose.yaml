@@ -3,54 +3,85 @@ version: '3.8'
 services:
   db:
     image: mariadb:latest
-    env_file:
-      - ./.env
+    container_name: gradely_db
+    env_file: ./.env
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_INITDB_SKIP_TZINFO: 1
+      MYSQL_INITDB_WAIT_TIMEOUT: 900
     volumes:
-      - db_data2:/var/lib/mysql
+      - gradely_db_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD", "mariadb-admin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
+    ports:
+      - "3306:3306"
+    networks:
+      - gradely_network
 
   phpmyadmin:
-    image: arm64v8/phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    platform: linux/amd64
+    container_name: gradely_phpmyadmin
     environment:
       PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - "8080:80"
-    depends_on:
-      db:
-        condition: service_healthy
+    networks:
+      - gradely_network
 
-  node:
-    image: node:latest
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: gradely_backend
+    env_file: ./.env
+    environment:
+      NODE_ENV: production
+      DB_HOST: db
     volumes:
       - ./back-end:/app
-    command: node --max-old-space-size=4096 /app/index.js
+      - /app/node_modules
     ports:
       - "4000:4000"
-    env_file:
-      - ./.env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - gradely_network
+    restart: unless-stopped
 
-  front-end:
-    build: .
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: gradely_frontend
     ports:
       - "80:80"
-    volumes:
-      - ./front-end/Gradely:/app
     depends_on:
-      - node
-
+      - backend
+    networks:
+      - gradely_network
+    restart: unless-stopped
 
 volumes:
-  db_data2:
+  gradely_db_data:
+
+networks:
+  gradely_network:
+    driver: bridge

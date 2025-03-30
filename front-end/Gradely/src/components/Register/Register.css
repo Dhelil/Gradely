@@ -4,7 +4,7 @@
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #f5f5f5;
+    background-color: #182449;
     padding: 20px;
   }
   
@@ -14,7 +14,7 @@
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    background-color: white;
+    background-color: #5472E4;
   }
   
   .register-header {
@@ -54,7 +54,7 @@
   .register-button {
     width: 100%;
     padding: 0.75rem;
-    background-color: #4CAF50;
+    background-color: #182449;
     color: white;
     border: none;
     border-radius: 4px;
