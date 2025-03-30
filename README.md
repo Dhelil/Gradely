@@ -2,6 +2,10 @@
 
 Application web intuitive pour la gestion des notes académiques, développée par Medjeni Dhelil.
 
+### Prérequis
+- Docker + Docker Compose
+- Ports 80, 4000, 8080 disponibles
+
 ## 🚀 Installation
 ``` git clone [URL_DU_DEPOT] ```
 
@@ -16,13 +20,13 @@ Application web intuitive pour la gestion des notes académiques, développée p
 
 ### 🆕 Première utilisation
 Création de compte
-Les comptes par défaut ne sont pas fonctionnels (problème d hash). Vous devez :
-1. Créer un nouveau compte via l'interface
+Les comptes par défaut ne sont pas fonctionnels (problème de hash). Vous devez :
+1. Créer un nouveau compte via l'interface (Register)
 2. Utiliser ces identifiants pour vous connecter
 
 ## 📝 Description
 
-Gradely permet aux étudiants et enseignants de gérer facilement :
+Gradely permet aux étudiants/enseignants/parents de gérer facilement :
 - 📌 Les notes académiques
 - 📝 Les devoirs
 - 📊 Les performances étudiantes
@@ -39,6 +43,7 @@ Avec une interface claire et des visualisations données.
 - Profils étudiants et cours
 - Saisie et consultation des notes
 - Gestion des devoirs
+- Gestion de la vie scolaire
 - Cahier de texte numérique
 
 ### 📊 Analytics
@@ -60,9 +65,6 @@ Avec une interface claire et des visualisations données.
 - **SGBD** : MariaDB (MySQL)
 - **Admin** : phpMyAdmin
 
-### Prérequis
-- Docker + Docker Compose
-- Ports 80, 4000, 8080 disponibles
 
 ### 📊 Trello
 https://trello.com/b/t3PEdZed/gradely
