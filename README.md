@@ -4,7 +4,9 @@ Application web intuitive pour la gestion des notes académiques, développée p
 
 ## 🚀 Installation
 ``` git clone [URL_DU_DEPOT] ```
-``` cd Docker ```
+
+``` cd Gradely ```
+
 ``` docker compose up -d --build ```
 
 ### 🌐 Accès
