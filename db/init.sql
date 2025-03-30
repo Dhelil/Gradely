@@ -10,6 +10,7 @@ USE `Gradely`;
 -- Désactivation des contraintes de clé étrangère temporairement
 SET FOREIGN_KEY_CHECKS = 0;
 
+
 -- --------------------------------------------------------
 -- Structure de la table `USER`
 DROP TABLE IF EXISTS `USER`;
