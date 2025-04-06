@@ -10,7 +10,6 @@ USE `Gradely`;
 -- Désactivation des contraintes de clé étrangère temporairement
 SET FOREIGN_KEY_CHECKS = 0;
 
-
 -- --------------------------------------------------------
 -- Structure de la table `USER`
 DROP TABLE IF EXISTS `USER`;
@@ -30,7 +29,7 @@ CREATE TABLE `USER` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 -- --------------------------------------------------------
--- Structure de la table `CLASSE` (modifiée pour utiliser timestamp)
+-- Structure de la table `CLASSE`
 DROP TABLE IF EXISTS `CLASSE`;
 CREATE TABLE `CLASSE` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -148,7 +147,6 @@ INSERT INTO `USER` (`name`, `surname`, `email`, `password`, `phone_number`, `add
 ('Teacher', 'Demo', 'teacher@gradely.com', '$2a$10$XuTnQN6X7yEn9i9Gj3JTwu5YQ6qQN4tZz7bB2V8Lk9J1Jc5m6J7Xe', '0102030405', '2 Rue Teacher', 'teacher'),
 ('Student', 'Demo', 'student@gradely.com', '$2a$10$ZzAAzzZZZzZzZzZzZzZzu.ZzZzZzZzZzZzZzZzZzZzZzZzZzZzZz', '0102030405', '3 Rue Student', 'user');
 
-
 INSERT INTO `CLASSE` (`name`, `niveau`, `annee_scolaire`) VALUES
 ('Classe A', '6ème', '2024-2025'),
 ('Classe B', '5ème', '2024-2025'),
@@ -170,6 +168,24 @@ INSERT INTO `DEVOIR` (`title`, `description`, `status`) VALUES
 ('Devoir Maison 1', 'Exercices de géométrie', 'En cours'),
 ('Dissertation', 'Commentaire de texte', 'En cours'),
 ('Exposé', 'Présentation historique', 'Terminé');
+
+-- Insertion des notes avec des dates variées
+INSERT INTO `NOTES` (`note_value`, `created_at`, `updated_at`) VALUES
+(15, '2024-09-15 00:00:00', '2024-09-15 00:00:00'),
+(18, '2024-10-05 00:00:00', '2024-10-05 00:00:00'),
+(12, '2024-10-20 00:00:00', '2024-10-20 00:00:00'),
+(14, '2024-11-10 00:00:00', '2024-11-10 00:00:00'),
+(16, '2024-11-25 00:00:00', '2024-11-25 00:00:00'),
+(9, '2024-12-05 00:00:00', '2024-12-05 00:00:00'),
+(11, '2025-01-15 00:00:00', '2025-01-15 00:00:00'),
+(17, '2025-02-10 00:00:00', '2025-02-10 00:00:00'),
+(13, '2025-03-01 00:00:00', '2025-03-01 00:00:00'),
+(19, '2025-03-20 00:00:00', '2025-03-20 00:00:00');
+
+-- Association des notes à l'étudiant (id_USER = 3)
+INSERT INTO `USER_NOTES` (`id_USER`, `id_NOTES`) VALUES
+(3, 1), (2, 2), (1, 3), (3, 4), (2, 5),
+(1, 6), (3, 7), (2, 8), (1, 9), (3, 10);
 
 -- --------------------------------------------------------
 -- Contraintes de clé étrangère
