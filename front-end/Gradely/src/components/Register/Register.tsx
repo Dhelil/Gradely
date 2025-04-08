@@ -151,6 +151,15 @@ const Register: React.FC = () => {
                         {isSubmitting ? 'Creating account...' : 'Register'}
                     </button>
                 </form>
+
+                <div className="login-footer">
+                <p>
+                    Déjà un compte ?{' '}
+                    <a href="/login" className="login-link">
+                    Se connecter
+                    </a>
+                </p>
+                </div>
             </div>
         </div>
     );

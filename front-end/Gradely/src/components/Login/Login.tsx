@@ -1,108 +1,143 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
-const Login: React.FC = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState<string | null>(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const navigate = useNavigate();
+interface UserData {
+  id: string;
+  name: string;
+  surname: string;
+  email: string;
+}
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        setIsLoggedIn(!!token);
-    }, []);
+interface LoginResponse {
+  token: string;
+  user: UserData;
+}
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
-        setError(null);
-        setIsSubmitting(true);
+interface LoginProps {
+  setUser: (user: UserData | null) => void;
+}
 
-        try {
-            const response = await fetch('http://localhost:4000/user/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
-            });
+const Login: React.FC<LoginProps> = ({ setUser }) => {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to login');
-            }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
-            const { token } = await response.json();
-            
-            // Stockage du seul token
-            localStorage.setItem('token', token);
-            
-            setIsLoggedIn(true);
-            navigate("/");
-        } catch (err) {
-            setError((err as Error).message);
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setIsSubmitting(true);
 
-    const handleLogout = () => {
-        // Suppression du seul token
-        localStorage.removeItem('token');
-        setIsLoggedIn(false);
-        navigate("/login");
-    };
+    try {
+      const response = await fetch('http://localhost:4000/user/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-    return (
-        <div className="login-container">
-            <div className="login-form">
-                <h2 className="login-header">Login</h2>
-                {error && <p className="login-error">{error}</p>}
+      const data: LoginResponse = await response.json();
 
-                {!isLoggedIn ? (
-                    <form onSubmit={handleSubmit}>
-                        <div className="login-form-group">
-                            <label className="login-label">Email:</label>
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="login-input"
-                                required
-                            />
-                        </div>
-                        <div className="login-form-group">
-                            <label className="login-label">Password:</label>
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="login-input"
-                                required
-                            />
-                        </div>
-                        <button 
-                            type="submit" 
-                            className="login-button"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? 'Logging in...' : 'Login'}
-                        </button>
-                    </form>
-                ) : (
-                    <div style={{ textAlign: 'center' }}>
-                        <p>Vous êtes déjà connecté</p>
-                        <button 
-                            onClick={handleLogout}
-                            className="login-button logout-button"
-                        >
-                            Logout
-                        </button>
-                    </div>
-                )}
-            </div>
+    //   if (!response.ok) {
+    //     throw new Error(data.message || 'Échec de la connexion');
+    //   }
+
+      // Sauvegarde des données d'authentification
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      // Mise à jour de l'état global
+      setUser(data.user);
+
+      // Redirection vers la page d'accueil
+      navigate('/');
+    } catch (err) {
+      console.error('Erreur de connexion:', err);
+      setError(
+        err instanceof Error 
+          ? err.message 
+          : 'Une erreur est survenue lors de la connexion'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="login-container">
+      <div className="login-card">
+        <h2 className="login-title">Connexion</h2>
+        
+        {error && (
+          <div className="login-error">
+            <p>{error}</p>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="login-form">
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              disabled={isSubmitting}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password">Mot de passe</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              disabled={isSubmitting}
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            className="login-button"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <span className="button-loader">Connexion...</span>
+            ) : (
+              'Se connecter'
+            )}
+          </button>
+        </form>
+
+        <div className="login-footer">
+          <p>
+            Pas encore de compte ?{' '}
+            <a href="/register" className="register-link">
+              S'inscrire
+            </a>
+          </p>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default Login;

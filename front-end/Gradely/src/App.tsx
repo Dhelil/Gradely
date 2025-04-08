@@ -10,40 +10,88 @@ interface User {
   id: string;
   name: string;
   surname: string;
+  email?: string;
 }
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
+  const [isAuthChecked, setIsAuthChecked] = useState(false);
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
-    try {
-      setUser(userData ? JSON.parse(userData) : null);
-    } catch (e) {
-      console.error("Erreur de parsing user:", e);
-      setUser(null);
+
+    if (token && userData) {
+      try {
+        setUser(JSON.parse(userData));
+      } catch (e) {
+        console.error("Erreur de parsing user:", e);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+      }
     }
+    setIsAuthChecked(true);
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+    window.location.reload(); // actualisation de la page après déconnexion
+  };
+
+  if (!isAuthChecked) {
+    return <div>Vérification de l'authentification...</div>;
+  }
 
   return (
     <Router>
       <div>
         <nav>
-          <ul>
+          <ul style={{ display: 'flex', gap: '1rem', listStyle: 'none', alignItems: 'center' }}>
             <li><Link to="/">Home</Link></li>
+            {!user ? (
+              <>
                 <li><Link to="/login">Login</Link></li>
                 <li><Link to="/register">Register</Link></li>
+              </>
+            ) : (
+              <>
+                <li><Link to={`/notes/${user.id}/notes`}>Mes notes</Link></li>
+                <li style={{ color: 'green', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  Connecté en tant que : {user.name}
+                  <button 
+                    onClick={handleLogout}
+                    style={{
+                      padding: '0.3rem 0.6rem',
+                      backgroundColor: '#ef4444',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      fontSize: '0.85rem'
+                    }}
+                  >
+                    Déconnexion
+                  </button>
+                </li>
+              </>
+            )}
           </ul>
         </nav>
 
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/notes/:userId/notes" element={<NotesUser />} />
           <Route 
-            path="/notes" 
-            element={user ? <Navigate to={`/notes/${user.id}/notes`} /> : <Navigate to="/login" />} 
+            path="/login" 
+            element={<Login setUser={setUser} />} 
+          />
+          <Route path="/register" element={<Register />} />
+          <Route 
+            path="/notes/:userId/notes" 
+            element={
+              localStorage.getItem('token') ? <NotesUser /> : <Navigate to="/login" state={{ from: 'notes' }} />
+            } 
           />
         </Routes>
       </div>
