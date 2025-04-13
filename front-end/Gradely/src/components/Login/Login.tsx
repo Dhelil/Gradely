@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
@@ -25,7 +25,21 @@ const Login: React.FC<LoginProps> = ({ setUser }) => {
   });
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [existingUser, setExistingUser] = useState<UserData | null>(null);
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser) as UserData;
+        setExistingUser(parsedUser);
+      } catch {
+        localStorage.removeItem('user');
+      }
+    }
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -51,24 +65,20 @@ const Login: React.FC<LoginProps> = ({ setUser }) => {
 
       const data: LoginResponse = await response.json();
 
-    //   if (!response.ok) {
-    //     throw new Error(data.message || 'Échec de la connexion');
-    //   }
+      if (!response.ok) {
+        throw new Error(data as any); // si tu veux afficher un message de l'API plus tard
+      }
 
-      // Sauvegarde des données d'authentification
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
-
-      // Mise à jour de l'état global
       setUser(data.user);
 
-      // Redirection vers la page d'accueil
       navigate('/');
     } catch (err) {
       console.error('Erreur de connexion:', err);
       setError(
-        err instanceof Error 
-          ? err.message 
+        err instanceof Error
+          ? err.message
           : 'Une erreur est survenue lors de la connexion'
       );
     } finally {
@@ -79,62 +89,72 @@ const Login: React.FC<LoginProps> = ({ setUser }) => {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h2 className="login-title">Connexion</h2>
-        
-        {error && (
-          <div className="login-error">
-            <p>{error}</p>
-          </div>
-        )}
+        <h2 className="login-title">Login</h2>
 
-        <form onSubmit={handleSubmit} className="login-form">
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              disabled={isSubmitting}
-            />
+        {existingUser ? (
+          <div className="already-logged-in">
+            <p>Vous êtes déjà connecté en tant que : <strong>{existingUser.name} {existingUser.surname}</strong></p>
+            <button
+              className="home-button"
+              onClick={() => navigate('/')}
+            >
+              Retour à l'accueil
+            </button>
           </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Mot de passe</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              disabled={isSubmitting}
-            />
-          </div>
-
-          <button 
-            type="submit" 
-            className="login-button"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <span className="button-loader">Connexion...</span>
-            ) : (
-              'Se connecter'
+        ) : (
+          <>
+            {error && (
+              <div className="login-error">
+                <p>{error}</p>
+              </div>
             )}
-          </button>
-        </form>
 
-        <div className="login-footer">
-          <p>
-            Pas encore de compte ?{' '}
-            <a href="/register" className="register-link">
-              S'inscrire
-            </a>
-          </p>
-        </div>
+            <form onSubmit={handleSubmit} className="login-form">
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  disabled={isSubmitting}
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="password">Mot de passe</label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  disabled={isSubmitting}
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="login-button"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Connexion...' : 'Se connecter'}
+              </button>
+            </form>
+
+            <div className="login-footer">
+              <p>
+                Pas encore de compte ?{' '}
+                <a href="/register" className="register-link">
+                  S'inscrire
+                </a>
+              </p>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

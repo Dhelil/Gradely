@@ -5,12 +5,14 @@ import Home from './components/Home/Home';
 import Login from './components/Login/Login';
 import Register from './components/Register/Register';
 import NotesUser from './components/NotesUser/NotesUser';
+import AdminNotes from './components/AdminNotes/AdminNotes';
 
 interface User {
   id: string;
   name: string;
   surname: string;
   email?: string;
+  role?: string;
 }
 
 function App() {
@@ -37,7 +39,7 @@ function App() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
-    window.location.reload(); // actualisation de la page après déconnexion
+    window.location.reload();
   };
 
   if (!isAuthChecked) {
@@ -58,6 +60,7 @@ function App() {
             ) : (
               <>
                 <li><Link to={`/notes/${user.id}/notes`}>Mes notes</Link></li>
+                {user.role === 'admin' && <li><Link to="/notes">Toutes les notes</Link></li>}
                 <li style={{ color: 'green', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   Connecté en tant que : {user.name}
                   <button 
@@ -82,15 +85,22 @@ function App() {
 
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route 
-            path="/login" 
-            element={<Login setUser={setUser} />} 
-          />
+          <Route path="/login" element={<Login setUser={setUser} />} />
           <Route path="/register" element={<Register />} />
           <Route 
             path="/notes/:userId/notes" 
             element={
-              localStorage.getItem('token') ? <NotesUser /> : <Navigate to="/login" state={{ from: 'notes' }} />
+              user ? <NotesUser /> : <Navigate to="/login" state={{ from: 'notes' }} />
+            } 
+          />
+          <Route 
+            path="/notes" 
+            element={
+              user && user.role === 'admin' ? (
+                <AdminNotes />
+              ) : (
+                <Navigate to="/" state={{ error: "Accès refusé" }} />
+              )
             } 
           />
         </Routes>

@@ -88,52 +88,50 @@ router.post('/add', async (req, res) => {
 // Route de login
 router.post('/login', (req, res) => {
     const { email, password } = req.body;
-
-    // Requête pour vérifier l'utilisateur dans la base de données et récupérer son nom, prénom, email, etc.
-    const checkUserQuery = 'SELECT id, email, name, surname, password FROM USER WHERE email = ?';
   
+    const checkUserQuery = 'SELECT id, email, name, surname, password, role FROM USER WHERE email = ?';
+    
     db.query(checkUserQuery, [email], (err, results) => {
+      if (err) {
+        console.error('Erreur lors de la vérification de l\'utilisateur:', err);
+        return res.status(500).json({ message: "Erreur lors de la vérification de l'utilisateur" });
+      }
+  
+      if (results.length === 0) {
+        return res.status(401).json({ message: "Nom d'utilisateur ou mot de passe incorrect" });
+      }
+  
+      const user = results[0];
+  
+      bcrypt.compare(password, user.password, (err, isMatch) => {
         if (err) {
-            console.error('Erreur lors de la vérification de l\'utilisateur:', err);
-            return res.status(500).json({ message: "Erreur lors de la vérification de l'utilisateur" });
+          console.error('Erreur lors de la vérification du mot de passe:', err);
+          return res.status(500).json({ message: "Erreur lors de la vérification du mot de passe" });
         }
-
-        if (results.length === 0) {
-            return res.status(401).json({ message: "Nom d'utilisateur ou mot de passe incorrect" });
+  
+        if (!isMatch) {
+          return res.status(401).json({ message: "Nom d'utilisateur ou mot de passe incorrect" });
         }
-
-        // Vérification du mot de passe
-        const user = results[0];
-        bcrypt.compare(password, user.password, (err, isMatch) => {
-            if (err) {
-                console.error('Erreur lors de la vérification du mot de passe:', err);
-                return res.status(500).json({ message: "Erreur lors de la vérification du mot de passe" });
-            }
-
-            if (!isMatch) {
-                return res.status(401).json({ message: "Nom d'utilisateur ou mot de passe incorrect" });
-            }
-
-            // Créer un objet utilisateur avec les informations nécessaires
-            const utilisateur = {
-                id: user.id,
-                email: user.email,
-                name: user.name, // Ajout du prénom
-                surname: user.surname, // Ajout du nom de famille
-            };
-
-            // Générer un token JWT
-            const token = jwt.sign(
-                { id: utilisateur.id },
-                process.env.JWT_SECRET,
-                { expiresIn: '1h' }
-            );
-
-            // Réponse avec le token et les informations utilisateur
-            res.json({ token, user: utilisateur });
-        });
+  
+        const utilisateur = {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          surname: user.surname,
+          role: user.role // Ajout du rôle
+        };
+  
+        const token = jwt.sign(
+          { id: utilisateur.id },
+          process.env.JWT_SECRET,
+          { expiresIn: '1h' }
+        );
+  
+        res.json({ token, user: utilisateur });
+      });
     });
-});
+  });
+  
   
 
 

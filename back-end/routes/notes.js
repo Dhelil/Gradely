@@ -5,8 +5,21 @@ const db = require('../db');
 
 // Routes CRUD Admin
 // Route permettant de récupérer toutes les notes
+// Route pour récupérer toutes les notes avec les infos des élèves associés
 router.get('/', (req, res) => {
-  const query = 'SELECT * FROM NOTES';
+  const query = `
+    SELECT 
+      N.id AS note_id,
+      N.note_value,
+      N.created_at,
+      N.updated_at,
+      U.id AS user_id,
+      U.name,
+      U.surname
+    FROM USER_NOTES UN
+    JOIN NOTES N ON UN.id_NOTES = N.id
+    JOIN USER U ON UN.id_USER = U.id;
+  `;
 
   db.query(query, (err, results) => {
     if (err) {
@@ -16,6 +29,7 @@ router.get('/', (req, res) => {
     res.json(results);
   });
 });
+
 
 // Route permettant de récupérer une note spécifique selon son id
 router.get('/:id', (req, res) => {

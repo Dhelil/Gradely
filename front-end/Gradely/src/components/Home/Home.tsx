@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Home.css'; // Créez ce fichier CSS pour les styles
+import './Home.css';
 
 interface User {
   id: string;
@@ -46,7 +46,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchUserData();
-    
+
     const handleStorageChange = () => {
       fetchUserData();
     };
@@ -59,8 +59,9 @@ const Home = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setUser(null);
-    navigate('/login');
+    window.location.reload(); // actualisation après déconnexion
   };
 
   if (isLoading) {
@@ -77,9 +78,9 @@ const Home = () => {
     <div className="home-container">
       <div className="home-content">
         <h2>GRADELY</h2>
-        
+
         {error && <p className="error-message">{error}</p>}
-        
+
         {user ? (
           <div className="user-section">
             <p>Vous êtes déjà connecté</p>
