@@ -184,8 +184,8 @@ INSERT INTO `NOTES` (`note_value`, `created_at`, `updated_at`) VALUES
 
 -- Association des notes à l'étudiant (id_USER = 3)
 INSERT INTO `USER_NOTES` (`id_USER`, `id_NOTES`) VALUES
-(4, 1), (5, 2), (1, 3), (4, 4), (5, 5),
-(1, 6), (4, 7), (5, 8), (1, 9), (4, 10);
+(4, 1), (2, 2), (1, 3), (4, 4), (3, 5),
+(1, 6), (4, 7), (2, 8), (1, 9), (4, 10);
 
 -- --------------------------------------------------------
 -- Contraintes de clé étrangère

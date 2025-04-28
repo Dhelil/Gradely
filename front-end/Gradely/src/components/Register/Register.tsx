@@ -56,7 +56,7 @@ const Register: React.FC = () => {
     return (
         <div className="register-container">
             <div className="register-form">
-                <h2 className="register-header">Create Account</h2>
+                <h2 className="register-header">Créer un compte</h2>
                 {error && <p className="register-error">{error}</p>}
 
                 <form onSubmit={handleSubmit}>

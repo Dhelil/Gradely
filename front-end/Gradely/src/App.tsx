@@ -6,6 +6,8 @@ import Login from './components/Login/Login';
 import Register from './components/Register/Register';
 import NotesUser from './components/NotesUser/NotesUser';
 import AdminNotes from './components/AdminNotes/AdminNotes';
+import AdminNoteManager from './components/AdminNoteManager/AdminNoteManager';
+import AdminUserNotesPage from './components/AdminUserNotesPage/AdminUserNotesPage';
 
 interface User {
   id: string;
@@ -60,21 +62,16 @@ function App() {
             ) : (
               <>
                 <li><Link to={`/notes/${user.id}/notes`}>Mes notes</Link></li>
-                {user.role === 'admin' && <li><Link to="/notes">Toutes les notes</Link></li>}
+                {user.role === 'admin' && (
+                  <>
+                    <li><Link to="/notes">Toutes les notes</Link></li>
+                    <li><Link to="/admin/notes">Gérer toutes les notes</Link></li>
+                    <li><Link to={`/admin/user/${user.id}/notes`}>Mes notes (vue admin)</Link></li>
+                  </>
+                )}
                 <li style={{ color: 'green', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   Connecté en tant que : {user.name}
-                  <button 
-                    onClick={handleLogout}
-                    style={{
-                      padding: '0.3rem 0.6rem',
-                      backgroundColor: '#ef4444',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '0.85rem'
-                    }}
-                  >
+                  <button onClick={handleLogout} className="logout-button">
                     Déconnexion
                   </button>
                 </li>
@@ -89,19 +86,23 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route 
             path="/notes/:userId/notes" 
-            element={
-              user ? <NotesUser /> : <Navigate to="/login" state={{ from: 'notes' }} />
-            } 
+            element={user ? <NotesUser /> : <Navigate to="/login" />} 
           />
           <Route 
             path="/notes" 
+            element={user?.role === 'admin' ? <AdminNotes /> : <Navigate to="/" />} 
+          />
+          <Route 
+            path="/admin/notes" 
             element={
-              user && user.role === 'admin' ? (
-                <AdminNotes />
-              ) : (
-                <Navigate to="/" state={{ error: "Accès refusé" }} />
-              )
+              user?.role === 'admin' ? (
+                <AdminNoteManager mode="all" userId={user.id} />
+              ) : <Navigate to="/" />
             } 
+          />
+          <Route 
+            path="/admin/user/:userId/notes" 
+            element={user?.role === 'admin' ? <AdminUserNotesPage /> : <Navigate to="/" />} 
           />
         </Routes>
       </div>
